@@ -10,4 +10,26 @@ import UIKit
 
 class PhotosViewController: UIViewController {
     
-}
+    @IBOutlet var imageView: UIImageView!
+    
+    var photoStore: PhotoStore!
+    
+    override func viewDidLoad() {
+        
+        super.viewDidLoad()
+        
+        photoStore.fetchInterestingPhotos {
+            (photosResult) in
+            
+            switch photosResult {
+            case let .success(photos):
+                print("Successfully found \(photos.count) photos")
+            case let .failure(error):
+                print("Error fetching interesting photos: \(error)")
+            } // switch
+        }
+        
+    } // viewDidLoad()
+    
+} // PhotosViewController
+
