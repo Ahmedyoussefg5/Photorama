@@ -24,12 +24,31 @@ class PhotosViewController: UIViewController {
             switch photosResult {
             case let .success(photos):
                 print("Successfully found \(photos.count) photos")
+                
+                if let firstPhoto = photos.first {
+                    self.updateImageView(for: firstPhoto)
+                }
+                
             case let .failure(error):
                 print("Error fetching interesting photos: \(error)")
             } // switch
         }
         
     } // viewDidLoad()
+    
+    func updateImageView(for photo: Photo) {
+        photoStore.fetchImage(for: photo) {
+            (imageResult) in
+            
+            switch imageResult {
+            case let .success(image):
+                print("Successfully created image")
+                self.imageView.image = image
+            case let .failure(error):
+                print("Error fetching photo image: \(error)")
+            } // switch
+        }
+    }
     
 } // PhotosViewController
 
