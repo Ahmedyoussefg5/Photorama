@@ -24,6 +24,8 @@ enum ImageError: Error {
 
 class PhotoStore {
     
+    let imageStore = ImageStore()
+    
     private let session: URLSession = {
         let config = URLSessionConfiguration.default
         return URLSession(configuration: config)
@@ -37,12 +39,12 @@ class PhotoStore {
             (data, response, error) in
             
             // Bronze Challenge: Print status code and all header fields
-            let httpResponse = response as! HTTPURLResponse
-            print("Status code: \(httpResponse.statusCode)")
-            
-            for (key, value) in httpResponse.allHeaderFields.enumerated() {
-                print("Field: \(key) Value: \(value)")
-            }
+//            let httpResponse = response as! HTTPURLResponse
+//            print("Status code: \(httpResponse.statusCode)")
+//
+//            for (key, value) in httpResponse.allHeaderFields.enumerated() {
+//                print("Field: \(key) Value: \(value)")
+//            }
             
             let result = self.processPhotosRequest(data: data, error: error)
             OperationQueue.main.addOperation {
@@ -74,12 +76,26 @@ class PhotoStore {
     
     func fetchImage(for photo: Photo, completionHandler: @escaping (ImageResult) -> Void) {
         
+        let photoKey = photo.photoID
+        if let image = self.imageStore.image(forKey: photoKey) {
+            OperationQueue.main.addOperation {
+                completionHandler(.success(image))
+            }
+            
+            return
+        }
+        
         let url = photo.remoteURL
         let request = URLRequest(url: url)
         let task = session.dataTask(with: request) {
             (data, response, error) in
             
             let result = self.processImageRequest(data: data, error: error)
+            
+            if case let .success(image) = result {
+                self.imageStore.setImage(image, forKey: photoKey)
+            }
+            
             OperationQueue.main.addOperation {
                 completionHandler(result)
             }
