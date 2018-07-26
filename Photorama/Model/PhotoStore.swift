@@ -19,6 +19,11 @@ enum ImageResult {
     case failure(Error)
 }
 
+enum TagsResult {
+    case success([Tag])
+    case failure(Error)
+}
+
 enum ImageError: Error {
     case imageCreationError
 }
@@ -131,6 +136,26 @@ class PhotoStore {
         task.resume()
         
     } // fetchImage(photo:completionHandler:)
+    
+    func fetchAllPhotos(completionHandler: @escaping (PhotosResult) -> Void) {
+        let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
+        let sortByDateTaken = NSSortDescriptor(key: #keyPath(Photo.dateTaken), ascending: true)
+        fetchRequest.sortDescriptors = [sortByDateTaken]
+        
+        let viewContext = persistentContainer.viewContext
+        viewContext.perform {
+            do {
+                let allPhotos = try viewContext.fetch(fetchRequest)
+                completionHandler(.success(allPhotos))
+            } catch let err {
+                completionHandler(.failure(err))
+            }
+        }
+    }
+    
+    func fetchAllTags(completionHandler: @escaping (TagsResult) -> Void) {
+        
+    }
     
     private func processPhotosRequest(data: Data?, error: Error?) -> PhotosResult {
         guard let jsonData = data else {
