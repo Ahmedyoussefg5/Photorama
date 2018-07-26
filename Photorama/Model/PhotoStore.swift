@@ -63,19 +63,13 @@ class PhotoStore {
 //                print("Field: \(key) Value: \(value)")
 //            }
             
-            var result = self.processPhotosRequest(data: data, error: error)
-            
-            if case .success = result {
-                do {
-                    try self.persistentContainer.viewContext.save()
-                } catch let error {
-                    result = .failure(error)
+            self.processPhotosRequest(data: data, error: error, completionHandler: {
+                (result) in
+                OperationQueue.main.addOperation {
+                    completionHandler(result)
                 }
-            }
-            
-            OperationQueue.main.addOperation {
-                completionHandler(result)
-            }
+            })
+        
         } // task
         
         task.resume()
@@ -83,22 +77,25 @@ class PhotoStore {
     } // fetchInterestingPhotos
     
     // Silver Challenge: Use the Flickr API's getRecent photos 
-    func fetchRecentPhotos(completetionHandler: @escaping (PhotosResult) -> Void) {
-        
-        let url = FlickrAPI.recentPhotosURL
-        let request = URLRequest(url: url)
-        let task = session.dataTask(with: request) {
-            (data, response, error) in
-            
-            let result = self.processPhotosRequest(data: data, error: error)
-            OperationQueue.main.addOperation {
-                completetionHandler(result)
-            }
-        } // task
-        
-        task.resume()
-
-    } // fetchRecentPhotos
+//    func fetchRecentPhotos(completetionHandler: @escaping (PhotosResult) -> Void) {
+//        
+//        let url = FlickrAPI.recentPhotosURL
+//        let request = URLRequest(url: url)
+//        let task = session.dataTask(with: request) {
+//            (data, response, error) in
+//            
+//            self.processPhotosRequest(data: data, error: error, completionHandler: {
+//                (result) in
+//                OperationQueue.main.addOperation {
+//                    completetionHandler(result)
+//                }
+//            })
+//            
+//        } // task
+//        
+//        task.resume()
+//
+//    } // fetchRecentPhotos
     
     func fetchImage(for photo: Photo, completionHandler: @escaping (ImageResult) -> Void) {
         
@@ -169,12 +166,36 @@ class PhotoStore {
         }
     }
     
-    private func processPhotosRequest(data: Data?, error: Error?) -> PhotosResult {
+    private func processPhotosRequest(data: Data?, error: Error?, completionHandler: @escaping (PhotosResult) -> Void) {
         guard let jsonData = data else {
-            return .failure(error!)
+            completionHandler(.failure(error!))
+            return
         }
         
-        return FlickrAPI.photos(fromJSON: jsonData, into: persistentContainer.viewContext)
+        persistentContainer.performBackgroundTask {
+            (context) in
+            
+            let result = FlickrAPI.photos(fromJSON: jsonData, into: context)
+            
+            do {
+                try context.save()
+            } catch {
+                print("Error saving to Core Data: \(error)")
+                completionHandler(.failure(error))
+                return
+            }
+            
+            switch result {
+            case let .success(photos):
+                let photosID = photos.map { return $0.objectID }
+                let viewContext = self.persistentContainer.viewContext
+                let viewContextPhotos = photosID.map { return viewContext.object(with: $0) } as! [Photo]
+                
+                completionHandler(.success(viewContextPhotos))
+            case .failure:
+                completionHandler(result)
+            }
+        }
     } // processPhotosRequest(data:error:)
     
     private func processImageRequest(data: Data?, error: Error?) -> ImageResult {
