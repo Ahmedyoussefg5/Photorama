@@ -14,7 +14,7 @@ enum PhotosResult {
     case failure(Error)
 }
 
-enum ImageResult {
+enum ImagesResult {
     case success(UIImage)
     case failure(Error)
 }
@@ -78,26 +78,26 @@ class PhotoStore {
     
     // Silver Challenge: Use the Flickr API's getRecent photos 
 //    func fetchRecentPhotos(completetionHandler: @escaping (PhotosResult) -> Void) {
-//        
+//
 //        let url = FlickrAPI.recentPhotosURL
 //        let request = URLRequest(url: url)
 //        let task = session.dataTask(with: request) {
 //            (data, response, error) in
-//            
+//
 //            self.processPhotosRequest(data: data, error: error, completionHandler: {
 //                (result) in
 //                OperationQueue.main.addOperation {
 //                    completetionHandler(result)
 //                }
 //            })
-//            
+//
 //        } // task
-//        
+//
 //        task.resume()
 //
 //    } // fetchRecentPhotos
     
-    func fetchImage(for photo: Photo, completionHandler: @escaping (ImageResult) -> Void) {
+    func fetchImage(for photo: Photo, completionHandler: @escaping (ImagesResult) -> Void) {
         
         guard let photoKey = photo.photoID else {
             preconditionFailure("Photo expected to have a photo ID")
@@ -198,7 +198,7 @@ class PhotoStore {
         }
     } // processPhotosRequest(data:error:)
     
-    private func processImageRequest(data: Data?, error: Error?) -> ImageResult {
+    private func processImageRequest(data: Data?, error: Error?) -> ImagesResult {
         
         guard let imageData = data, let image = UIImage(data: imageData) else {
             if data == nil {
