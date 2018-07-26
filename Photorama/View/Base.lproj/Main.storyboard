@@ -98,7 +98,7 @@
                                 <items>
                                     <barButtonItem title="Tags" id="EbD-d6-j7m">
                                         <connections>
-                                            <segue destination="bnC-aC-DcM" kind="show" identifier="showTags" id="r4B-0r-3P5"/>
+                                            <segue destination="sfR-Bj-R4o" kind="show" identifier="showTags" id="r4B-0r-3P5"/>
                                         </connections>
                                     </barButtonItem>
                                 </items>
@@ -124,7 +124,7 @@
             </objects>
             <point key="canvasLocation" x="1615" y="-663"/>
         </scene>
-        <!--Tags View Controller-->
+        <!--Tags-->
         <scene sceneID="Ghb-9V-eZy">
             <objects>
                 <viewController id="bnC-aC-DcM" customClass="TagsViewController" customModule="Photorama" customModuleProvider="target" sceneMemberID="viewController">
@@ -133,20 +133,41 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="E0d-Po-ejP">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="UITableViewCell" textLabel="4TW-nw-393" style="IBUITableViewCellStyleDefault" id="E0d-Po-ejP">
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="E0d-Po-ejP" id="WSG-lB-2MH">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="4TW-nw-393">
+                                            <rect key="frame" x="16" y="0.0" width="343" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
                                 </tableViewCellContentView>
                             </tableViewCell>
                         </prototypes>
                     </tableView>
+                    <navigationItem key="navigationItem" title="Tags" id="qZi-H7-fPd">
+                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="done" id="1xd-EC-ale">
+                            <connections>
+                                <action selector="done:" destination="bnC-aC-DcM" id="WVQ-wr-Txm"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="lMO-s4-4ju">
+                            <connections>
+                                <action selector="addTag:" destination="bnC-aC-DcM" id="7qd-EX-iKb"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pFU-dx-JT0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2433" y="-663"/>
+            <point key="canvasLocation" x="3372" y="-663.41829085457277"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="XL6-p2-p5l">
@@ -165,6 +186,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KQV-57-QfI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="29.600000000000001" y="-663.41829085457277"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="ceg-4f-0eC">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="sfR-Bj-R4o" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="eOy-xL-rtr">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="bnC-aC-DcM" kind="relationship" relationship="rootViewController" id="jjk-xh-VEH"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="faf-h2-xgl" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2432.8000000000002" y="-663.41829085457277"/>
         </scene>
     </scenes>
 </document>

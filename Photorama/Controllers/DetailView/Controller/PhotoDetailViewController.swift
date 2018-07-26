@@ -36,8 +36,10 @@ class PhotoDetailViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.identifier {
         case "showTags"?:
-            let destinationVC = segue.destination as! TagsViewController
-            
+            let navigationVC = segue.destination as! UINavigationController
+            let destinationVC = navigationVC.topViewController as! TagsViewController
+            destinationVC.photoStore = photoStore
+            destinationVC.photo = photo
         default:
             preconditionFailure("Unexpected segue identifier")
         }
