@@ -7,12 +7,10 @@
 //
 //
 
-import Foundation
 import CoreData
-
+import Foundation
 
 extension Photo {
-
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Photo> {
         return NSFetchRequest<Photo>(entityName: "Photo")
     }
@@ -22,12 +20,11 @@ extension Photo {
     @NSManaged public var remoteURL: NSURL?
     @NSManaged public var title: String?
     @NSManaged public var tags: NSSet?
-
 }
 
 // MARK: Generated accessors for tags
-extension Photo {
 
+extension Photo {
     @objc(addTagsObject:)
     @NSManaged public func addToTags(_ value: Tag)
 
@@ -39,5 +36,4 @@ extension Photo {
 
     @objc(removeTags:)
     @NSManaged public func removeFromTags(_ values: NSSet)
-
 }

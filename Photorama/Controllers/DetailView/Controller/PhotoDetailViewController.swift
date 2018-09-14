@@ -11,21 +11,21 @@ import UIKit
 class PhotoDetailViewController: UIViewController {
     
     @IBOutlet var imageView: UIImageView!
-    
+
     var photoStore: PhotoStore!
-    
+
     var photo: Photo! {
         didSet {
             navigationItem.title = photo.title
         }
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         imageView.accessibilityLabel = photo.title
-        
-        photoStore.fetchImage(for: photo) { (result) in
+
+        photoStore.fetchImage(for: photo) { result in
             switch result {
             case let .success(image):
                 self.imageView.image = image
@@ -34,8 +34,8 @@ class PhotoDetailViewController: UIViewController {
             }
         }
     }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+
+    override func prepare(for segue: UIStoryboardSegue, sender _: Any?) {
         switch segue.identifier {
         case "showTags"?:
             let navigationVC = segue.destination as! UINavigationController
@@ -46,4 +46,5 @@ class PhotoDetailViewController: UIViewController {
             preconditionFailure("Unexpected segue identifier")
         }
     }
-}
+    
+} // PhotoDetailViewController

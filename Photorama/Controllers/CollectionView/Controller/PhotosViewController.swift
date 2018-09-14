@@ -8,35 +8,35 @@
 
 import UIKit
 
-class PhotosViewController: UIViewController, UICollectionViewDelegate {
+/// PhotosViewController handles the view presented on the homescreen
+/// which fetches and displays photos in a grid like fasion
+
+class PhotosViewController: UIViewController {
     
     @IBOutlet var collectionView: UICollectionView!
-    
+
     var photoStore: PhotoStore!
     let photoDataSource = PhotoDataSource()
-    
+
     override func viewDidLoad() {
-        
         super.viewDidLoad()
-        collectionView.dataSource = photoDataSource
-        collectionView.delegate = self
         
+        collectionView.delegate = self
+        collectionView.dataSource = photoDataSource
+
         updateDataSource()
         
-        photoStore.fetchInterestingPhotos {
-            (photosResult) in
-            
-            self.updateDataSource()
+        photoStore.fetchInterestingPhotos { [weak self] (_) in
+            self?.updateDataSource()
         }
-        
     } // viewDidLoad()
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+
+    override func prepare(for segue: UIStoryboardSegue, sender _: Any?) {
         switch segue.identifier {
         case "showPhotos"?:
             if let selectedIndexPath = collectionView.indexPathsForSelectedItems?.first {
                 let photo = photoDataSource.photos[selectedIndexPath.row]
-                
+
                 let destinationVC = segue.destination as! PhotoDetailViewController
                 destinationVC.photo = photo
                 destinationVC.photoStore = photoStore
@@ -45,7 +45,7 @@ class PhotosViewController: UIViewController, UICollectionViewDelegate {
             preconditionFailure("Unexpected segue identifier")
         }
     }
-    
+
     private func updateDataSource() {
         photoStore.fetchAllPhotos { (result) in
             switch result {
@@ -54,47 +54,34 @@ class PhotosViewController: UIViewController, UICollectionViewDelegate {
             case .failure:
                 self.photoDataSource.photos.removeAll()
             }
-            
+
             self.collectionView.reloadSections(IndexSet(integer: 0))
         }
     }
     
-    // MARK: - UICollectionViewDelegate
+} // PhotosViewController
+
+// MARK: - UICollectionViewDelegate
+extension PhotosViewController: UICollectionViewDelegate {
     
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        
+    /// willDisplay makes for a good time to fetch image data
+    func collectionView(_: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         let photo = photoDataSource.photos[indexPath.row]
         
-        photoStore.fetchImage(for: photo) {
-            (imageResult) in
+        // Download the image data
+        photoStore.fetchImage(for: photo) { (imageResult) in
+            guard case let .success(image) = imageResult else { return }
             
-            guard let photoIndex = self.photoDataSource.photos.index(of: photo),
-            case let .success(image) = imageResult else {
-                return
-            }
-            
+            // index path may change from when the fetching call was made. Make sure we use the right index path
+            guard let photoIndex = self.photoDataSource.photos.index(of: photo) else { return }
             let photoIndexPath = IndexPath(item: photoIndex, section: 0)
             
+            // only update cell if it's still visible
             if let cell = self.collectionView.cellForItem(at: photoIndexPath) as? PhotoCollectionViewCell {
                 cell.update(with: image)
             }
         }
-        
     }
     
-//    func updateImageView(for photo: Photo) {
-//        photoStore.fetchImage(for: photo) {
-//            (imageResult) in
-//
-//            switch imageResult {
-//            case let .success(image):
-//                print("Successfully created image")
-//                self.imageView.image = image
-//            case let .failure(error):
-//                print("Error fetching photo image: \(error)")
-//            } // switch
-//        }
-//    }
-    
-} // PhotosViewController
+}
 

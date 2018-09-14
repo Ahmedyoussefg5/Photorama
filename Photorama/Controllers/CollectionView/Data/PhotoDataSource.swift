@@ -8,22 +8,26 @@
 
 import UIKit
 
+/// PhotoDataSource represents the data source used to provide data
+/// for the collection view handled by PhotosViewController
+
 class PhotoDataSource: NSObject, UICollectionViewDataSource {
     
     var photos = [Photo]()
-    
+
     // MARK: - UICollectionViewDataSource
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+
+    func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int {
         return photos.count
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCollectionViewCell", for: indexPath) as! PhotoCollectionViewCell
-        
+
         let photo = photos[indexPath.row]
         cell.photoDescription = photo.title
-        
+
         return cell
     }
-}
+    
+} // PhotoDataSource
