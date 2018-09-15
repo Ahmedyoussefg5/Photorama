@@ -1,4 +1,4 @@
-# iOS-Practise-Photorama
+Photorama
 Flickr photo fetcher
 
 Application created using the resource: iOS Programming: The Big Nerd Ranch Guide (6th Edition)
